@@ -27,7 +27,7 @@ class DB:
 			image_name VARCHAR (200) DEFAULT 'default.png',
 			email VARCHAR(200) NOT NULL,
 			token VARCHAR(200) ,
-			email_confirmed INT NOT NULL,
+			email_confirmed INT NOT NULL DEFAULT 0,
 			PRIMARY KEY (id)
 		)
 		"""
@@ -122,18 +122,18 @@ class DB:
 	# User Crud
 	def register_user(self, details):
 		sql = """
-		INSERT INTO users (username, firstname, lastname, password, email, age,email_confirmed)
-		VALUES (%s, %s, %s, %s, %s, %s, %s)
+		INSERT INTO users (username, firstname, lastname, password, email, age)
+		VALUES (%s, %s, %s, %s, %s, %s)
 		"""
 		username = details['username']
 		firstname = details['firstname']
 		lastname = details['lastname']
 		email = details['email']
-		email_confirmed = details['email_confirmed']
+		# email_confirmed = details['email_confirmed']
 		password = details['password']
 		age = details['age']
 
-		self._exec_sql(sql, (username, firstname, lastname, password, email, age, int(email_confirmed)))
+		self._exec_sql(sql, (username, firstname, lastname, password, email, age))
 
 		# with self._client.cursor() as cursor:
 		# 	cursor.execute(sql, (username, firstname, lastname, password, email, int(email_confirmed)))
@@ -155,7 +155,7 @@ class DB:
 			sql = """
 			SELECT * from users where email = %s
 			"""
-			q = 'email'
+			q = query['email']
 		elif 'firstname' in query.keys():
 			sql = """
 			SELECT * from users where 'firstname' = %s
