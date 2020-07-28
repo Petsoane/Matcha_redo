@@ -170,7 +170,7 @@ class DB:
 			sql = """
 			SELECT * from users where id = %s
 			"""
-			q = '_id'
+			q = 'id'
 
 
 		return self._exec_sql_ret(sql, (q,))
