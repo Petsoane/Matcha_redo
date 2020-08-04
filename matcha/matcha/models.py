@@ -160,17 +160,17 @@ class DB:
 			sql = """
 			SELECT * from users where 'firstname' = %s
 			"""
-			q = 'firstname'
+			q = query['firstname']
 		elif 'lastname' in query.keys():
 			sql = """
 			SELECT * from users where lastname = %s
 			"""
-			q = 'lastname'
+			q = query['lastname']
 		elif 'id' in query.keys():
 			sql = """
 			SELECT * from users where id = %s
 			"""
-			q = 'id'
+			q = query['id']
 
 
 		return self._exec_sql_ret(sql, (q,))
@@ -302,6 +302,12 @@ class DB:
 		'''
 
 		return self._exec_sql_ret(sql, (author,))
+	
+	def get_posts(self):
+		sql = '''
+		SELECT * FROM posts
+		'''
+		return self._exec_sql_ret_all(sql)
 
 	def update_post(self, post):
 		''' Update the post of a single user '''
@@ -516,7 +522,7 @@ if __name__ == '__main__':
 	# Notifications
 	print('\n\n[Notifications]')
 	db.add_notification(1, 2, 'Bluh has just liked you')
-	print(db.get_notifications(2))
+	print(db.get_notifications(1))
 
 	# Courting
 	print('\n\n[Courting]')
