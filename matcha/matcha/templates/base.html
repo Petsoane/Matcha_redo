@@ -24,21 +24,28 @@
         <nav style="background: #007bfe!important;" class="navbar d-print navbar-expand-md navbar-dark bg-dark fixed-top">
             <div class="container">
                 <img src="{{ url_for('static', filename='../static/logos/logowhite.png') }}" alt="logo" width="5%"><a class="navbar-brand mr-4" href="/">Matcha</a>
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
                         <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
                         <a class="nav-item nav-link" href="#">Help</a>
                     </div>
+
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
+                        <!-- 
+                        Does this have to be here.
+                        If the login and logout will have to happen regardless of this part,
+                        we do not need to have a regiter or login.
+                        -->
                         {% if logged_in %}
                         <a class="nav-item nav-link" href="{{  url_for('posts.new_post') }}">Post</a>
                         <a href="{{ url_for('profile.profile') }}" class="nav-item nav-link">Profile</a>
                         <a href="{{ url_for('auth.logout') }}" class="nav-item nav-link">Logout</a>
-
                         <button type='button' id='inbox' class="notification btn" data-toggle="collapse" data-target="#notification" aria-expanded="false" aria-controls="collapse">
                             <span>Inbox</span>
                             {% if current_user and current_user['notifications'] %}
@@ -47,10 +54,10 @@
                             <span class="badge" id='badge'></span>
                             {% endif %}
                         </button> {% else %}
+
                         <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">Login</a>
                         <a class="nav-item nav-link" href="{{ url_for('auth.register') }}">Register</a> {% endif %}
                     </div>
-
                 </div>
             </div>
         </nav>
@@ -59,12 +66,22 @@
     <main role="main" class="container">
         <div class="row">
             <div class="col-md-6">
-                {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+                <!-- Flashing the errors to the user. -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                 {% if messages %} 
+                 {% for category, message in messages %}
                 <div class="alert alert-{{ category }}">
                     {{ message }}
                 </div>
-                {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+                {% endfor %}
+                {% endif %} 
+                {% endwith %} 
+                <!-- Content block
+                This could be better implemented with calls to the api, instead of tying each request to a database query
+                -->
+                {% block content %}{% endblock %}
             </div>
+
             <div class="col-md-4" style="margin-left: 16%;">
                 <div class="content-section">
                     <!-- notifications -->

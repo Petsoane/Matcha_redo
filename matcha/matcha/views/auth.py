@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, flash, request, url_for
-from matcha import db
+from matcha import db, logged_in_users
+from matcha.utils import *
 
 from functools import wraps
 import secrets, re, bcrypt, html
@@ -71,11 +72,16 @@ def register():
 			details['password'] = bcrypt.hashpw(details['password'].encode('utf-8'), salt)
 			db.register_user(details)
 
+			flash("Please check your mail for confirmation", "success")
 			# this should return a redirect to the correct page.
-			return 'check database'
-
+			return redirect( url_for('auth.login') )
+		
+		# Flash errors
+		for error in errors:
+			flash(error,'danger')
+		
 	# This should render the template.
-	return '\n'.join(errors)
+	return render_template('auth/register.html', details=details)
 
 @auth.route('/confirm', methods=['GET'])
 def confirm():
@@ -109,25 +115,34 @@ def login():
 		details['password'] = details['password'].encode('utf-8')
 
 		user = db.get_user({'username': details['username']})
-		user['password'] = user['password'].encode('utf-8')
-
 
 		# print(details["email_confirmed"])
-		print('[user passwd]', type(user['password']))
 
 		if not user:
 			errors.append('Incorrect username or password')
-		elif not bool(user['email_confirmed']):
-			errors.append('Please check your email for confirmation')
-		elif not bcrypt.checkpw(details['password'], user['password']):
+		# elif not bool(user['email_confirmed']):
+		# 	errors.append('Please check your email for confirmation')
+
+		user['password'] = user['password'].encode('utf-8')
+		if not bcrypt.checkpw(details['password'], user['password']):
 			errors.append('Incorrect username or password')
 
+
 		if not errors:
-			return user
+			session['username'] = details['username']
+			flash('Successful login', 'success')
+			if not details['username'] in logged_in_users:
+				logged_in_users[details['username']] = ''
+			
+			calculate_fame(user)
+			return redirect( url_for('main.home') )
 
 		# flash errors
+		for error in errors:
+			flash(error, 'danger')
 
-	return '\n'.join(errors)
+	return render_template("auth/login.html", details=details)
+	# return '\n'.join(errors)
 
 @auth.route('/logout')
 def logout():

@@ -1,11 +1,18 @@
 {% extends 'base.html' %} 
 
 {% block content %}
-<div class="container">
+<!-- <div class="container">
     <h1>Welcome to <b style="font-size: 10vh;">Matcha</b></h1>
     <br/>
+</div> -->
+
+
+<div class="content-section" id="test">
+
 </div>
-<div class="content-sections">
+
+<!-- This will be populated by java script -->
+<!-- <div class="content-sections">
   {% for post in posts %}
   <article class="media content-section ">
     <img class="article-img rounded"
@@ -20,5 +27,9 @@
     </div>
   </article>
   {% endfor %}
-</div>
+</div> -->
 {% endblock content %}
+
+{% block js %}
+document.getElementById("test").innerHTML = "This is the java script part"
+{% endblock js%}

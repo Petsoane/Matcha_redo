@@ -206,6 +206,13 @@ class DB:
 		self.delete_user_info(id)
 		self._exec_sql(sql, (id,))
 
+	def count_users(self):
+		sql = """
+		SELECT count(*) FROM users
+		"""
+
+		return self._exec_sql_ret(sql)
+
 
 	# User info
 	def update_user_info(self, info, create=False):

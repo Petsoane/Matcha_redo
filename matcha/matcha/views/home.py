@@ -7,7 +7,6 @@ main = Blueprint('main', __name__)
 
 test_user = 'Lebo'
 
-
 @main.route('/')
 def home():
     posts = (db.get_posts())
