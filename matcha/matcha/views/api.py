@@ -11,5 +11,6 @@ api = Blueprint('api', __name__)
 def search_username(username):
     # global valid_users
     user = db.get_user({'username': username})
-
+    
     return user
+
