@@ -158,6 +158,7 @@ def logout():
 @auth.route('/forgotpw', methods=['GET','POST'])
 def forgotpw():
 	errors = []
+	details = {}
 
 	if request.method == 'POST':
 		username = request.form.get('username')
@@ -171,9 +172,13 @@ def forgotpw():
 			errors.append('No such user found, please register an account, peasant')
 
 		if not errors:
-			return 'Send email'
+			flash('Please check your email to reset your password', 'success')
+
+		# Flash errors
+		for error in errors:
+			flash(error,'danger')
 		
-	return '\n'.join('errors')
+	return render_template('auth/forgotpw.html', details=details)
 
 
 @auth.route('/resetpw', methods=['GET','POST'])
@@ -199,7 +204,10 @@ def resetpw():
 			salt = bcrypt.gensalt()
 			user['password'] = bcrypt.hashpw(password.encode('utf-8'), salt)
 			db.update_user(user)
-			return 'user password update, check the database to make sure'
+			return redirect( url_for('auth.login') )
+
+		for error in errors:
+			flash(error, 'danger')
 
 		
-	return '\n'.join(errors)
+	return render_template('auth/resetpw.html')
