@@ -5,7 +5,7 @@ import html
 
 main = Blueprint('main', __name__)
 
-test_user = 'Lebo'
+test_user = 'Lebogang'
 
 @main.route('/')
 def home():
@@ -13,7 +13,7 @@ def home():
     user = db.get_user({'username': test_user})
 
     # get notifications and merge them to the dictionary
-    notifications = db.get_notifications(user['id'])
+    notifications = db.get_notifications(user['id']) # Does the fetchall function get all 
     if isinstance(notifications, tuple):
         notifications = {}
 
@@ -32,5 +32,16 @@ def home():
 
 @main.route('/users')
 def users():
+    # Get the logged in user
+
+    # Get the users blocked lisg
+
+    # Filter out all the users that dont match the sexual preference.
+
+    # Filter out the users in the blocked list. ! This can be done in the backend.. maybe?
+
+    # Assign to the valid users global variable.
+
+    # render the page
     return 'This is the user page'
 
