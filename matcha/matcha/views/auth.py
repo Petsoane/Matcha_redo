@@ -4,7 +4,7 @@ from matcha.utils import *
 
 from functools import wraps
 import secrets, re, bcrypt, html
-from datetime import datetime 
+from datetime import datetime
 
 # Create a blueprint
 auth = Blueprint('auth', __name__)
@@ -23,7 +23,7 @@ def register():
 
 	if request.method == 'POST':
 		print("-------------------------------------",request.form.get("username"))
-		details['username'] = html.escape(request.form.get('username')) 
+		details['username'] = html.escape(request.form.get('username'))
 		details['firstname'] = html.escape(request.form.get("firstname"))
 		details['lastname'] = html.escape(request.form.get('lastname'))
 		details['email'] = html.escape(request.form.get('email'))
@@ -39,11 +39,11 @@ def register():
 		# 	errors.append('The username is already take.')
 
 		# Check the users email
-		if db.get_user({'email': details['email']}):
-			errors.append('the email is already taken!')
+		# if db.get_user({'email': details['email']}):
+		# 	errors.append('the email is already taken!')
 		if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,100}$', details['email']):
 			errors.append('invalid email format')
-		
+
 		# Check the users password
 		# if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{5,25}$", details['password']):
 		# 	errors.append("the password is invalid")
@@ -53,7 +53,7 @@ def register():
 		# Check the users firstname
 		if not re.match('^[A-Z][a-zA-Z-]{1,24}$', details['firstname']):
 			errors.append('A name must start with a capital letter.')
-		
+
 		# check the users age
 		try:
 			details['age'] = int(request.form.get('age'))
@@ -65,7 +65,7 @@ def register():
 		# Check the users lastname
 		if not re.match('^[A-Z][ a-zA-Z-]{1,24}$', details['lastname']):
 			errors.append("The lastname must start with a capital letter.")
-		
+
 
 		if not errors:
 			salt = bcrypt.gensalt()
@@ -75,11 +75,11 @@ def register():
 			flash("Please check your mail for confirmation", "success")
 			# this should return a redirect to the correct page.
 			return redirect( url_for('auth.login') )
-		
+
 		# Flash errors
 		for error in errors:
 			flash(error,'danger')
-		
+
 	# This should render the template.
 	return render_template('auth/register.html', details=details)
 
@@ -112,19 +112,22 @@ def login():
 	if request.method == 'POST':
 		details['username'] = html.escape(request.form.get('username'))
 		details['password'] = html.escape(request.form.get('password'))
-		details['password'] = details['password'].encode('utf-8')
+		# details['password'] = details['password'].encode('utf-8')
+
+		print(details['password'], "Why is this here")
 
 		user = db.get_user({'username': details['username']})
 
 		# print(details["email_confirmed"])
 
+		# Check if the user actually exists
 		if not user:
-			errors.append('Incorrect username or password')
+			errors.append('Incorrect username or password: ')
+
 		# elif not bool(user['email_confirmed']):
 		# 	errors.append('Please check your email for confirmation')
 
-		user['password'] = user['password'].encode('utf-8')
-		if not bcrypt.checkpw(details['password'], user['password']):
+		if (not user) and not bcrypt.checkpw(details['password'].encode('utf-8'), user['password'].encode('urf-8')):
 			errors.append('Incorrect username or password')
 
 
@@ -133,7 +136,7 @@ def login():
 			flash('Successful login', 'success')
 			if not details['username'] in logged_in_users:
 				logged_in_users[details['username']] = ''
-			
+
 			calculate_fame(user)
 			return redirect( url_for('main.home') )
 
@@ -177,7 +180,7 @@ def forgotpw():
 		# Flash errors
 		for error in errors:
 			flash(error,'danger')
-		
+
 	return render_template('auth/forgotpw.html', details=details)
 
 
@@ -187,7 +190,7 @@ def resetpw():
 
 	if request.method == 'GET':
 		jrr = request.args.get('jrr')
-	
+
 	if request.method == 'POST':
 		jrr = request.args.get('jrr')
 		user = db.get_user({'id': jrr})
@@ -196,7 +199,7 @@ def resetpw():
 
 		if not re.match('[A-Za-z0-9]', password):
 			errors.append('The password must have an uppcase, lowercase and a digit')
-		
+
 		if password_repeat != password:
 			errors.append('The two passwords do not match')
 
@@ -209,5 +212,5 @@ def resetpw():
 		for error in errors:
 			flash(error, 'danger')
 
-		
+
 	return render_template('auth/resetpw.html')

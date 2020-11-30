@@ -22,7 +22,7 @@ def get_howfar(current_user, users):
 #     users=db.users()
 #     valid_users = [user for user in users if get_howfar(current_user, users) < 20]
 
-# This is used to force the user to login before being allowed to 
+# This is used to force the user to login before being allowed to
 # get access to a route
 def login_required(f):
     @wraps(f)
@@ -38,9 +38,9 @@ def finish_profile(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         user = db.get_user({'username':session.get('username')})
-        if user['completed'] == 0:
+        if user['email_confirmed'] == 0:
             flash("Please finish your profile first", 'info')
-            return redirect( url_for('profile.profile', next=request.url))
+            return redirect( url_for('auth.login', next=request.url))
         return f(*args, **kwargs)
     return wrapper
 
@@ -92,7 +92,7 @@ def send_mail(reciever, subject='email confirmation', text=None, html=None):
         Welcome to Matcha.
         Copy the URL below to confirm your email:
         http://127.0.0.1:5000/confirm?jrr={}""".format(user['username'],user['_id'])
-        
+
     if not html:
         html = """\
         <html>

@@ -203,7 +203,7 @@ class DB:
 
     def update_user(self, details):
         sql = """
-        UPDATE users 
+        UPDATE users
         SET username = %s,
             firstname = %s,
             lastname = %s,
@@ -281,8 +281,8 @@ class DB:
         self._exec_sql(sql, (gender, sex, bio, interests, fame_rating, latlon, last_seen, location, user_id))
 
     def get_user_info(self, user_id):
-        ''' Returns the specified users information 
-            
+        ''' Returns the specified users information
+
             This should be called before the user is deleted to avoid orphaned data.
         '''
         sql = '''
@@ -318,7 +318,7 @@ class DB:
         '''
 
         print("Testing Blocked table", self._exec_sql_ret_all(sql, (blocker_id)), " End of test")
-        
+
 
     def update_likes(self, user_id, new_count):
         sql = '''
@@ -352,7 +352,7 @@ class DB:
         '''
 
         return self._exec_sql_ret(sql, (author,))
-    
+
     def get_posts(self):
         sql = '''
         SELECT * FROM posts
@@ -381,7 +381,7 @@ class DB:
         ''' Delete a users post'''
 
         sql =  '''
-        DELETE FROM posts WHERE author = %s 
+        DELETE FROM posts WHERE author = %s
         '''
 
         self._exec_sql(sql, (author,))
@@ -453,7 +453,7 @@ class DB:
         self._exec_sql(sql, (courter_id, courted_id))
 
     def accept_courting(self, courter_id, courted_id):
-        ''' This sets the "matched" field to true, meaning that the two parties are 
+        ''' This sets the "matched" field to true, meaning that the two parties are
             now courting each other.
         '''
 
@@ -510,6 +510,8 @@ class DB:
             cursor.execute(sql, args)
             results = cursor.fetchall()
 
+        print("What is the value of result: ", results)
+
         return results
 
 
@@ -563,7 +565,7 @@ if __name__ == '__main__':
     print(db.get_post(1))
 
 
-    # Gallery 
+    # Gallery
     print('\n\n[Gallery]')
     db.add_image('test', 1)
     print(db.get_image('test'))
